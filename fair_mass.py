@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch
 import numpy as np
 import math
-
+from scipy.special import comb
 
 class Optimization():
     """
@@ -176,7 +176,7 @@ class SHAPTorch():
             length = dims - len(marginal)
             marginal = [0] * length + marginal
             if marginal[curr] == 0:
-                w = 1 / (dims * math.comb(dims-1, sum(marginal)))
+                w = 1 / (dims * comb(dims-1, sum(marginal)))
                 out[count] = w * self.gii_feature(method, X, curr, marginal, repeat)
                 count += 1
         return torch.sum(out, 0)
@@ -228,7 +228,7 @@ class SHAP():
             length = dims - len(marginal)
             marginal = [0] * length + marginal
             if marginal[curr] == 0:
-                w = 1 / (dims * math.comb(dims-1, sum(marginal)))
+                w = 1 / (dims * comb(dims-1, sum(marginal)))
                 out[count] = w * self.gii_feature(method, X, curr, marginal, repeat)
                 count += 1
         return np.sum(out, 0)

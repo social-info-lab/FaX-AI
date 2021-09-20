@@ -11,8 +11,8 @@ NOTE: When we refer to our paper in this repository we refer to Marrying Explain
 
 To install requirements:
 
-1. For our methods, [Python 3.8](https://www.python.org/downloads/release/python-380/), [numpy, scipy](https://www.scipy.org/scipylib/download.html), [matplotlib](http://matplotlib.org/), [scikit-learn](https://scikit-learn.org/stable/), and [PyTorch](https://pytorch.org/get-started/locally/).
-2. For other methods and to produce the paper's results, all of the above plus [AIF360](https://github.com/Trusted-AI/AIF360) and [Pandas](https://pandas.pydata.org/).
+1. For our methods, [Python >=3.6](https://www.python.org/downloads/release/python-370/), [numpy, scipy](https://www.scipy.org/scipylib/download.html), [matplotlib](http://matplotlib.org/), [scikit-learn](https://scikit-learn.org/stable/), and [PyTorch](https://pytorch.org/get-started/locally/).
+2. For the examples and other methods, all of the above plus [AIF360](https://github.com/Trusted-AI/AIF360) and [Pandas](https://pandas.pydata.org/).
 
 ## Using Our Methods
 All of our methods can be found within the file "fair_mass.py". The following classes have the implementations: Optimization, OIM, and MIM.
@@ -23,37 +23,18 @@ Datasets must be in numpy-type arrays. Additionally, the protected attribute sep
 
 Note that our methods train when they are initialized.
 
-## Training and Evaluation from Marrying Explainable and Fair Supervised Models
-
-To train and evaluate the model(s) in the paper, run this command:
-
-```train
-python main.py
-```
-
-Dataset choice can be adjusted in lines 199-208 in main.py by modifying the path variable.
-
 ## Important Files in this Repo
 
 #### fair_mass.py
 - Main file containing the implementation of our methods and input influence measures.
 
-### Files for Experiments
-#### main.py
-- Used to train and evaluate models for the results in our paper.
+### Example files
+#### simple_example.py
+- Shows how to use our Optimization method using randomly generated NumPy arrays.
 
-#### helper.py
-- Helper functions for the main file.
-
-#### aif_methods.py
-- Compatibility layer for select methods from the [AIF360](https://github.com/Trusted-AI/AIF360) library for use with our experiments.
-
-#### aif_metrics.py
-- Compatibility layer for select metrics from the [AIF360](https://github.com/Trusted-AI/AIF360) library for use with our experiments.
+#### compas_example.py
+- Shows how to load and preprocess the COMPAS data from the [AIF360](https://github.com/Trusted-AI/AIF360) library and use it our Optimization.
 
 ### Folders
-#### datasets
-- Data for generating the results from the paper.
-
-#### alternate implementations
-- Contains implementations and experiments for older versions of the paper. 
+#### example
+- Contains code for the Marrying Explainable and Fair Supervised Models results.
