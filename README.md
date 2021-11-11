@@ -1,4 +1,4 @@
-# Fair and Explainable AI Models (FaX-AI)
+# Fair and Explainable AI (FaX-AI)
 
 This repository is the official implementation of the methods used in Marrying Explainable and Fair Supervised Models (there is also a [ICML SRML 21 workshop version](https://icmlsrml2021.github.io/files/24.pdf)) and in [Supervised Learning under Discriminatory Dataset Shifts](https://arxiv.org/abs/1912.08189).
 >Will add full Marrying Explainable and Fair Supervised Models arxiv link when ready.
