@@ -23,9 +23,9 @@ Additionally, let the following measures of the impact of features to these meth
 | ------------- | ------------- | ------------- |
 | **Feature Impact**  |<img src="images/figurestand.svg" width="450" />|<img src="images/figuremim.svg" width="450" />|
 
-Therefore, the FaX AI methods permits the usage of features associated with the protected feature in accordance with the business necessity clause and drops the protected attribute from the without inducing indirect discrimination.
+The FaX AI methods permits the usage of features associated with the protected feature potentially in accordance with the business necessity clause and drops the protected attribute from the without inducing indirect discrimination.
 
-From these results we have the following pros and cons from these methods:
+In summary, this hiring scenario presents the following pros and cons for these methods:
 |  | Standard Learning  | FaX-AI Methods |
 | ------------- | ------------- | ------------- |
 | **Pros**  |<ul><li>Better replicates model from data generating process.</li><li>Potentially more accurate.</li></ul>|<ul><li>Prevents direct discrimination via race.</li><li>Allows for relevant attribute (degree type) to affect hiring outcome.</li></ul>|
