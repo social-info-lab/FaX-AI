@@ -5,7 +5,7 @@ This is the official repository for fair learning methods that remove *direct di
 This connection and the associated methods are detailed and evaluated in Marrying Explainable and Fair Supervised Models ([ICML SRML 21 workshop version](https://drive.google.com/file/d/1z24hITF0Xrlc_IX_rOZVZ2aigOj1hxhD/view?usp=sharing)).
 
 ## Example: Fair and Explainable Hiring Automation
-Say we want to create an machine learning system to decide who our company should hire from a pool of applicants with college degrees. Using our company's past and, unfortunately, biased hiring history we generate training data with the following information from applicants:
+Say we want to create an machine learning system to decide who our company should hire from a pool of applicants with college degrees. Using our company's past and, possibly, biased hiring history we put together training data with the following information from applicants:
 - The legibility of their resume (assuming we can objectively score this) :blue_square:
 - Whether they have a 2 year or a 4 year degree :green_square:
 - Whether they went to a public or a private college/university :yellow_square:
