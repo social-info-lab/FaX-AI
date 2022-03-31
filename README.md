@@ -17,7 +17,7 @@ Let's say that the following graphical model represents the biased decision-maki
   <img src="images/stand.svg" width="350" />
 </p>
 
-Since there was a casual relation between race and our hiring outcomes in the above process, we say that our historical hiring model was directly dicriminatory. The goal of standard learning models is to obtain a model trained on a dataset that can predict outcomes. If the dataset is tainted by discrimination, like in our example, then models trained using it can perpetuate this discimination.
+Since there was a casual relation between race and our hiring outcomes in the above process, we say that our historical hiring model was directly discriminatory. The goal of standard learning models is to obtain a model trained on a dataset that can predict outcomes. If the dataset is tainted by discrimination, like in our example, then models trained using it can perpetuate this discimination.
 
 While there are many statistical notions of fairness to measure discrimination for these models, we propose it can also be measured using explainability methods that measure the impact of features to a model’s output. Say that we trained a standard supervised learning model on our hiring dataset and it produces the following measures of impact:
 
@@ -40,13 +40,13 @@ Since we know that the training dataset is discriminatory, we might want drop th
 This approach removes the impact of race from the model, however, it introduces the impact of "public or private institution", a feature potentially related to race. We refer to this as the inducement of indirect discrimination. With absence of the protected feature, this approach uses related feature(s) as a proxy, thus inducing indirect discrimination.
 
 ### Common Fair Learning Methods
-Alternatively, we can try to use a method based on well-known fairness objective, such as parity of impact and treatment, leading to following graphic model and feature impact:
+Alternatively, we can try to use a method based on well-known fairness objective, such as parity of impact and treatment, leading to the following graphic model and feature impact:
 <p align="center">
   <img src="images/fair.svg" width="350" />
   <img src="images/figurefair.svg" width="350" />
 </p>
 
-While this removes the impact of all features related to race, this method may significantly reduce model accuracy. Legal systems may allow for the usage of these features through _business necessity clause_. Given its relevance to a job, the usage of whether an applicant has an associates degree or a bachelors degree may be legally permitted in our hiring case.
+While this removes the impact of all features related to race, this method may significantly reduce model accuracy. Legal systems may allow for the usage of these features through _business necessity clause_. Given its relevance to a job, the usage of whether an applicant has an associates degree or a bachelor's degree may be legally permitted in our hiring case.
 
 ### Fair and Explainable AI
 This repository provides fair learning algorithms that permit usage of features associated with the protected feature in accordance with the business necessity clause and drops the protected attribute from the model without inducing indirect discrimination. This results in the following graphic model and feature impact measures in our hiring example:
