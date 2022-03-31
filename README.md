@@ -4,7 +4,7 @@ This is the official repository for fair learning methods that remove *direct di
 
 This connection and the associated methods are detailed and evaluated in Marrying Explainable and Fair Supervised Models ([ICML SRML 21 workshop version](https://drive.google.com/file/d/1z24hITF0Xrlc_IX_rOZVZ2aigOj1hxhD/view?usp=sharing)).
 
-## Fairness and Explainability Hiring Example
+## Example: Fair and Explainable Hiring Automation
 Say we want to create an machine learning system to decide who our company should hire from a pool of applicants with college degrees. Using our company's past and, unfortunately, biased hiring history we generate training data with the following information from applicants:
 - The legibility of their resume (assuming we can objectively score this) :blue_square:
 - Whether they have a 2 year or a 4 year degree :green_square:
@@ -48,7 +48,7 @@ Alternatively, we can try to use a method based on well-known fairness objective
 
 While this removes the impact of all features related to race, this method may significantly reduce model accuracy. Legal systems may allow for the usage of these features through _business necessity clause_. Given its relevance to a job, the usage of whether an applicant has an associates degree or a bachelors degree may be legally permitted in our hiring case.
 
-### Our Methods
+### Fair and Explainable AI
 This repository provides fair learning algorithms that permit usage of features associated with the protected feature in accordance with the business necessity clause and drops the protected attribute from the model without inducing indirect discrimination. This results in the following graphic model and feature impact measures in our hiring example:
 
 <p align="center">
