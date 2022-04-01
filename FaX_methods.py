@@ -9,6 +9,21 @@ import math
 
 
 class Optimization():
+    """
+    Optimization approach for binary Y that removes the influence of the
+    protected attributes Z, while preserving the influence of non-protected
+    attributes X by minimizing L^{IND}_{ATE}(X) or L^{IND}_{ATE}.
+    During initialization the model trains (calls self.fit) and the base
+    estimator is LogisticRegression() below.
+    Args:
+        X: numpy array of the non-protected attributes
+        Z: numpy array of the non-protected attributes of
+            the protected attribute (must be binary)
+        Y: numpy array of the non-protected of the target value (must be binary)
+        influence: string 'shap' or 'ate' to indicate which influence measure
+            to be used
+        params: a dictionary of the parameters to be used
+    """
     def __init__(self, X, Z, Y, influence='shap', params=None):
         # model
         partial, full, XZ = self.get_sklearn_models(X, Z, Y)
@@ -32,12 +47,27 @@ class Optimization():
         self.fit(X, target, params)
 
     def get_sklearn_models(self, X, Z, Y):
+        """
+        Trains a logisic regression model for full and partial model.
+        Args:
+            X: numpy array of the non-protected attributes
+            Z: numpy array of the non-protected attributes of
+                the protected attribute (must be binary)
+            Y: numpy array of the non-protected of the target value (must be binary)
+        """
         partial = LR().fit(X, Y)
         XZ = np.hstack((X, Z))
         full = LR().fit(XZ, Y)
         return partial, full, XZ
     
     def fit(self, X, target, params):
+        """
+        Trains the optimization approach
+        Args:
+            X: torch.FloatTensor of the data for non-protected attributes
+            target: torch tensor of the target input influence values
+            params: a dictionary of the parameters to be used
+        """
         optimizer = self.model.optimizer(self.model.parameters(), lr=params['learning_rate'])
         min_error = torch.tensor(float('inf'))
         best_params = None
@@ -54,22 +84,43 @@ class Optimization():
         self.model.set_params(best_params[0], best_params[1])
 
     def error(self, X, target):
+        """
+        Error with respect to the influence.
+        Args:
+            X: torch.FloatTensor of the non-protected attributes
+            target: torch tensor of the target input influence values
+        """
         inf = self.ii.influence(self, X)
         # inf = Variable(inf, requires_grad = True)
         return nn.MSELoss()(target, inf)
 
     def predict_proba(self, X, grad=False):
+        """
+        Returns the probabilities of the predicted class labels
+        Args:
+            X: numpy array or torch tensor of the non-protected attributes
+        """
         if grad:
             return self.model.predict_proba(X, True)
         with torch.no_grad():
             return self.model.predict_proba(X)
 
     def predict(self, X):
+        """
+        Returns the predicted class labels
+        Args:
+            X: numpy array or torch tensor of the non-protected attributes
+        """
         with torch.no_grad():
             return self.model.predict(X)
 
 
 class LogisticRegression(nn.Module):
+    """
+    Logisitc Regression model using PyTorch
+    Args:
+        input_size: size of the dataset that will be passed in
+    """
     def __init__(self, input_size):
         super().__init__()
         self.input_size = input_size
@@ -106,6 +157,14 @@ class LogisticRegression(nn.Module):
 
 
 class SHAPTorch():
+    """
+    SHAP influence measure using PyTorch. Needed for optimzation approach.
+    Args:
+        method: size of the dataset that will be passed in
+        X: torch.FloatTensor of the data being evaluated
+        repeat: number of times to repeat the SHAP value calculation approach
+            to later take the mean of
+    """
     def __init__(self, XZ, repeat=10):
         self.N, self.d = XZ.shape
         # shuffle Z
@@ -425,6 +484,16 @@ class MDETorch():
 
 
 class OIM():
+    """
+    OIM using PyTorch. Needed for experiments in the inpute influence paper.
+    See full details about the approach in
+    https://github.com/social-info-lab/discrimination-prevention/tree/master/src
+    Args:
+        X: numpy array of the non-protected attributes
+        Z: numpy array of the non-protected attributes of
+            the protected attribute (must be binary)
+        Y: numpy array of the non-protected of the target value (must be binary)
+    """
     def __init__(self, X, Z, Y):
         XZ = np.hstack((X, Z))
         self.model = LR().fit(XZ, Y)
@@ -459,6 +528,14 @@ class OIM():
 
 
 class MIM():
+    """
+    MIM using PyTorch. Needed for experiments in the inpute influence paper.
+    Args:
+        X: numpy array of the non-protected attributes
+        Z: numpy array of the non-protected attributes of
+            the protected attribute (must be binary)
+        Y: numpy array of the non-protected of the target value (must be binary)
+    """
     def __init__(self, X, Z, Y):
         XZ = np.hstack((X, Z))
         self.model = LR().fit(XZ, Y)
