@@ -12,25 +12,51 @@ Say we want to create an machine learning system to decide who our company shoul
 - Their race :red_square:
 - The hiring outcome (Yes/No) :purple_square:
 
-The following graphical models results from applying a standard learning method and our FaX-AI methods to this example scenario. The directed edges correspond to causal relations, while the dashed edges correspond to potential relationships. 
+Let's say that the following graphical model represents the biased decision-making process. The directed edges correspond to causal relations, while the dashed edges correspond to potential relationships.
+<p align="center">
+  <img src="images/stand.svg" width="350" />
+</p>
 
-|  | Standard Learning  | FaX-AI Methods |
-| ------------- | ------------- | ------------- |
-| **Graphical Model**  |<img src="images/stand.svg" width="450" />|<img src="images/mim.svg" width="450" />|
+Since there was a casual relation between race and our hiring outcomes in the above process, we say that our historical hiring model was directly discriminatory. The goal of standard learning models is to obtain a model trained on a dataset that can predict outcomes. If the dataset is tainted by discrimination, like in our example, then models trained using it can perpetuate this discimination.
 
-Additionally, let the following measures of the impact of features to these methods' output result from using explainability algorithms such as [SHAP](https://github.com/slundberg/shap). 
-|  | Standard Learning  | FaX-AI Methods |
-| ------------- | ------------- | ------------- |
-| **Feature Impact**  |<img src="images/figurestand.svg" width="450" />|<img src="images/figuremim.svg" width="450" />|
+While there are many statistical notions of fairness to measure discrimination for these models, we propose it can also be measured using explainability methods that measure the impact of features to a model’s output. Say that we trained a standard supervised learning model on our hiring dataset and it produces the following measures of impact:
 
-The FaX AI methods permits the usage of features associated with the protected feature potentially in accordance with the *business necessity clause* and drops the protected attribute from the without inducing indirect discrimination.
+<p align="center">
+  <img src="images/figurestand.svg" width="350" />
+</p>
 
-In summary, this hiring scenario presents the following pros and cons for these methods:
-|  | Standard Learning  | FaX-AI Methods |
-| ------------- | ------------- | ------------- |
-| **Pros**  |<ul><li>Better replicates model from data generating process.</li><li>Potentially more accurate.</li></ul>|<ul><li>Prevents direct discrimination via race.</li><li>Allows for relevant attribute (degree type) to affect hiring outcome.</li></ul>|
-| **Cons**  |<ul><li>Allows for direct dirscrimination via race.</li><li>Does not account for fairness.</li></ul>|<ul><li>Potentially more computationally expensive.</li><li>Worse accuracy than the standard model.</li></ul>|
+As we can see above, race has an impact on our trained model's output for hiring decisions. Therefore, we can say that it discriminates directly. <!-- In general, we propose that any model that has a protected feature, such as race, impact it's output is directly discriminatory. -->
 
+Our company definitely wants to make sure that we do not perpetuate this discrimination by race. How can we accomplish this goal?
+
+### Standard Learning Dropping Race
+Since we know that the training dataset is discriminatory, we might want drop the protected feature, race, when training a standard learning model. This, however, is too naive and results in the following graphic model and feature impact measures.
+
+<p align="center">
+  <img src="images/standnoz.svg" width="350" />
+  <img src="images/figurestandnoz.svg" width="350" />
+</p>
+
+This approach removes the impact of race from the model, however, it introduces the impact of "public or private institution", a feature potentially related to race. We refer to this as the inducement of indirect discrimination. With absence of the protected feature, this approach uses related feature(s) as a proxy, thus inducing indirect discrimination.
+
+### Common Fair Learning Methods
+Alternatively, we can try to use a method based on well-known fairness objective, such as parity of impact and treatment, leading to the following graphic model and feature impact:
+<p align="center">
+  <img src="images/fair.svg" width="350" />
+  <img src="images/figurefair.svg" width="350" />
+</p>
+
+While this removes the impact of all features related to race, this method may significantly reduce model accuracy. Legal systems may allow for the usage of these features through _business necessity clause_. Given its relevance to a job, the usage of whether an applicant has an associates degree or a bachelor's degree may be legally permitted in our hiring case.
+
+### Fair and Explainable AI
+This repository provides fair learning algorithms that permit usage of features associated with the protected feature in accordance with the business necessity clause and drops the protected attribute from the model without inducing indirect discrimination. This results in the following graphic model and feature impact measures in our hiring example:
+
+<p align="center">
+  <img src="images/mim.svg" width="350" />
+  <img src="images/figuremim.svg" width="350" />
+</p>
+
+Above, our methods permits the usage of applicants' undergraduate degree type and removes the impact of the protected feature, race, without introducing an impact from "public or private institution" on the model's output.
 
 ## Installation
 
