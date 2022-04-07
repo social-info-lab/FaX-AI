@@ -80,10 +80,10 @@ pip install TODO[option]
 Clone this repo and install the following:
 
 1. For our methods, [Python >=3.7](https://www.python.org/downloads/release/python-370/), [numpy, scipy](https://www.scipy.org/scipylib/download.html), [scikit-learn](https://scikit-learn.org/stable/), and [PyTorch](https://pytorch.org/get-started/locally/).
-2. For the examples and other methods, all of the above plus [matplotlib](http://matplotlib.org/), [AIF360](https://github.com/Trusted-AI/AIF360) and [Pandas](https://pandas.pydata.org/).
+2. For the examples and other methods, all of the above plus [matplotlib](http://matplotlib.org/), [AIF360](https://github.com/Trusted-AI/AIF360), [SHAP](https://github.com/slundberg/shap), and [Pandas](https://pandas.pydata.org/).
 
 ## Using Our Methods
-All of our methods can be found within the file "fair_mass.py". The following classes have the implementations: Optimization, OIM, and MIM.
+All of our methods can be found within the file "FaX_methods.py". The following classes have the implementations: Optimization, OIM, and MIM.
 
 We include other implementations support our methods such as logistic regression, the underlying estimator for our methods, and the influence measures of SHAP and MDE.
 
@@ -119,10 +119,10 @@ Usage is similar to popular libraries such as [scikit-learn](https://scikit-lear
 The more computationally efficient of our methods is the marginal interventional mixture (MIM). The MIM is based on interventions from causal explainability literature
 known as probabilistic interventions.
 ```python
-import fair_mass
+import FaX_methods
 #Create the MIM model with the generated data
 #Note that we already had X and Z seperated
-model_MIM = fair_mass.MIM(X, Z, Y)
+model_MIM = FaX_methods.MIM(X, Z, Y)
 
 #generate some more data for non-protected attribute
 pred_MIM = model_MIM.predict(X)
@@ -130,30 +130,25 @@ pred_MIM = model_MIM.predict(X)
 Due to the efficiency of this method, we suggest that new users focus on using the MIM before our other methods.
 
 ##### Optimization-Influence
-The optimization method is a two-stage optimization-based method. It first drops the protected attribute, Z, from the dataset an trains a standard model minimizing cross-enthropy loss. Then it optimizes for the loss function based on input influence measures. This loss function is mimimized by preserving the influence of non-protected attributes, X, from the original standard model trained with all attributes. Currently we support two measures of influence, marginal direct effect (MDE), introduced in our [paper](https://icmlsrml2021.github.io/files/24.pdf), and [SHAP (SHapley Additive exPlanations)](https://github.com/slundberg/shap).
+The optimization method is a two-stage optimization-based method. It first drops the protected attribute, Z, from the dataset an trains a standard model minimizing cross-enthropy loss. Then it optimizes for the loss function based on input influence measures. This loss function is mimimized by preserving the influence of non-protected attributes, X, from the original standard model trained with all attributes. Currently we support two measures of influence, marginal direct effect (MDE), introduced in our [paper](https://drive.google.com/file/d/1z24hITF0Xrlc_IX_rOZVZ2aigOj1hxhD/view?usp=sharing), and [SHAP (SHapley Additive exPlanations)](https://github.com/slundberg/shap).
 ```python
-import fair_mass
+import FaX_methods
 #Create an optimization model with the generated data
 #Note that we already had X and Z seperated
-model_OPT = fair_mass.Optimization(X, Z, Y, influence='shap')
+model_OPT = FaX_methods.Optimization(X, Z, Y, influence='shap')
 
 #generate some more data for non-protected attribute
 pred_OPT = model_OPT.predict(X)
 ```
 Usage is similar to the MIM except users need to specify whether they shall use SHAP or MDE for the input influence measure. Due to the computational cost of calculating input influence, this method currently does not work for datasets with many features.
 
-## Important Files in this Repo
+## Files in this Repo
 
-#### fair_mass.py
+#### FaX_methods.py
 - Main file containing the implementation of our methods and input influence measures.
 
-### Example files
-#### simple_example.py
-- Shows how to use our Optimization method using randomly generated NumPy arrays.
+#### aif360_utils.py
+- Contains implementations for using the AIF360 library with SHAP and the FaX AI methods.
 
-#### compas_example.py
-- Shows how to load and preprocess the COMPAS data from the [AIF360](https://github.com/Trusted-AI/AIF360) library and use it our Optimization.
-
-### Folders
-#### example
-- Contains code for the Marrying Explainable and Fair Supervised Models results.
+#### "FaX AI and SHAP.ipynb"
+- Shows how to load and preprocess the COMPAS data using the [AIF360](https://github.com/Trusted-AI/AIF360) library and how to use our method, sklearn methods, and AIF360 methods with that data. Also shows how to use metrics from AIF360 and the [SHAP](https://github.com/slundberg/shap) library.
