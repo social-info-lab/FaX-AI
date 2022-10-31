@@ -119,10 +119,12 @@ Usage is similar to popular libraries such as [scikit-learn](https://scikit-lear
 The more computationally efficient of our methods is the marginal interventional mixture (MIM). The MIM is based on interventions from causal explainability literature
 known as probabilistic interventions.
 ```python
-import FaX_methods
+import FaX_methods #if downloaded the repo from git
+#import fax_ai #if downloaded using pip
 #Create the MIM model with the generated data
 #Note that we already had X and Z seperated
-model_MIM = FaX_methods.MIM(X, Z, Y)
+model_MIM = FaX_methods.MIM(X, Z, Y) #if downloaded the repo from git
+#model_MIM = fax_ai.MIM(X, Z, Y) #if downloaded using pip
 
 #generate some more data for non-protected attribute
 pred_MIM = model_MIM.predict(X)
