@@ -74,6 +74,16 @@ For our methods and ensuring you can run our examples with SHAP and AIF360:
 ```bash
 pip install fax-ai[full]
 ```
+Note that the pip installation has different syntax when importing.
+```python
+# Using MIM example
+import fax_ai
+fax_ai.MIM(X, Z, Y) 
+
+# Using utilities for examples and our notebook
+import fax_ai.aif360_utils
+fax_ai.aif360_utils.load_census()
+```
 
 ### Installing Manually
 
@@ -121,6 +131,7 @@ known as probabilistic interventions.
 ```python
 import FaX_methods #if downloaded the repo from git
 #import fax_ai #if downloaded using pip
+
 #Create the MIM model with the generated data
 #Note that we already had X and Z seperated
 model_MIM = FaX_methods.MIM(X, Z, Y) #if downloaded the repo from git
