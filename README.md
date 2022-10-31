@@ -68,11 +68,11 @@ Above, our methods permits the usage of applicants' undergraduate degree type an
 ### Using `pip`
 For just our methods:
 ```bash
-pip install TODO
+pip install fax-ai
 ```
-For our methods and the examples using SHAP and fair learning methods and metrics:
+For our methods and ensuring you can run our examples with SHAP and AIF360:
 ```bash
-pip install TODO[option]
+pip install fax-ai[full]
 ```
 
 ### Installing Manually
