@@ -59,7 +59,7 @@ class Optimization():
         XZ = np.hstack((X, Z))
         full = LR().fit(XZ, Y)
         return partial, full, XZ
-    
+
     def fit(self, X, target, params):
         """
         Trains the optimization approach
@@ -182,7 +182,7 @@ class SHAPTorch():
 
         for i in range(repeat):
             order[i] = np.random.permutation(self.N)
-        
+
         for i in range(powd):
             dims = []
             # i = 13 => marginal = [1 1 0 1]
@@ -242,7 +242,7 @@ class SHAP():
 
         for i in range(repeat):
             order[i] = np.random.permutation(self.N)
-        
+
         for i in range(powd):
             dims = []
             # i = 13 => marginal = [1 1 0 1]
@@ -314,13 +314,13 @@ class SHAP():
 #             inpA, inpB = self.XZ_A[:, :-1], self.XZ_B[:, :-1]
 #         else:
 #             inpA, inpB = self.XZ_A, self.XZ_B
-       
+
 #         Yhat = method.predict_proba(inpA, True)[:, 0]
 #         Yhat_ = method.predict_proba(inpB, True)[:, 0]
 #         #dY = self.Y - self.Y_ - Yhat + Yhat_
 #         dY = torch.reshape(Yhat - Yhat_, (self.N, self.M)).mean(1)
 #         # L1 Norm
-#         # todo: don't take the mean 
+#         # todo: don't take the mean
 #         # out = dY.mean(1)
 #         return dY
 
@@ -338,7 +338,7 @@ class MDE_pool():
         (X1, X2, ..., XN, X1, X2, ...) -> M times
         dim : (NXM, n-1)
         """
-        XA = np.tile(XZ[idx_XA,:-1], (M,1)) 
+        XA = np.tile(XZ[idx_XA,:-1], (M,1))
         XB = np.tile(XZ[idx_XB,:-1], (M,1))
 
         idx_Z = np.random.choice(m, N)
@@ -379,7 +379,7 @@ class MDE_ind():
     """
     1. Draw N samples of Xi'' and Xi from the full set of values of Xi. This gives two vectors Xi'' and Xi
     2. For each of the N samples in each of the two vectors Xi'' and Xi, draw jointly M samples of Z' and all Xj' (all j!=i)
-       from the full set of (X,Z) tuples. We end up with two big matrices: A = (Xi, all Xj',Z') and B = (Xi'', all Xj', Z'). 
+       from the full set of (X,Z) tuples. We end up with two big matrices: A = (Xi, all Xj',Z') and B = (Xi'', all Xj', Z').
        Size of A and B is (nXN)XM
     """
     def __init__(self, XZ, M=400, N=400):
@@ -398,10 +398,10 @@ class MDE_ind():
         for i in range(N):
             XZ_A[np.arange(self.n), i, :, np.arange(self.n)] = np.tile(sample_A[i:i+1,:].T, (1, self.M))
             XZ_B[np.arange(self.n), i, :, np.arange(self.n)] = np.tile(sample_B[i:i+1,:].T, (1, self.M))
-        
+
         self.XZ_A = np.reshape(XZ_A, (-1, self.n))
         self.XZ_B = np.reshape(XZ_B, (-1, self.n))
-    """    
+    """
     3. Now, Yhat = eval_model.predict_proba(A), Yhat' = eval_model.predict_proba(B)
     4. Compute dY=Yhat-Yhat', then dY.reshape((n,N,M)) , followed up by mean over the M columns. This gives us a nXN size vector.
     5. We take abs of this and average over N.
@@ -424,13 +424,13 @@ class MDE_ind():
         out = np.mean(np.abs(dY_), 1)
         return out
 
-    
+
 # this is the ind version
 class MDETorch():
     """
     1. Draw N samples of Xi'' and Xi from the full set of values of Xi. This gives two vectors Xi'' and Xi
     2. For each of the N samples in each of the two vectors Xi'' and Xi, draw jointly M samples of Z' and all Xj' (all j!=i)
-       from the full set of (X,Z) tuples. We end up with two big matrices: A = (Xi, all Xj',Z') and B = (Xi'', all Xj', Z'). 
+       from the full set of (X,Z) tuples. We end up with two big matrices: A = (Xi, all Xj',Z') and B = (Xi'', all Xj', Z').
        Size of A and B is (nXN)XM
     """
     def __init__(self, XZ, M=400, N=400):
@@ -449,13 +449,13 @@ class MDETorch():
         for i in range(N):
             XZ_A[np.arange(self.n), i, :, np.arange(self.n)] = sample_A[i:i+1,:].T.repeat((1, self.M))
             XZ_B[np.arange(self.n), i, :, np.arange(self.n)] = sample_B[i:i+1,:].T.repeat((1, self.M))
-        
+
         self.XZ_A = torch.reshape(XZ_A, (-1, self.n))
         self.XZ_B = torch.reshape(XZ_B, (-1, self.n))
 
         # self.Y = self.full.predict_proba(self.XZ_A, True)[:, 0]
         # self.Y_ = self.full.predict_proba(self.XZ_B, True)[:, 0]
-    """    
+    """
     3. Now, Y = full_model.predict_proba(A), Y' = full_model.predict_proba(B), Yhat = eval_model.predict_proba(A), Yhat' = eval_model.predict_proba(B)
     4. Compute dY=Y-Y', then dY.reshape((n,N,M)), followed up by mean over the M columns. This gives us a nXN size vector.
     5. Compute dYhat=Yhat-Yhat', then dYhat.reshape((n,N,M)), followed up by mean over the M columns. This gives us a nXN size vector.
@@ -473,7 +473,7 @@ class MDETorch():
             inpA, inpB = self.XZ_A[:, :-1], self.XZ_B[:, :-1]
         else:
             inpA, inpB = self.XZ_A, self.XZ_B
-       
+
         Yhat = method.predict_proba(inpA, True)[:, 0]
         Yhat_ = method.predict_proba(inpB, True)[:, 0]
         dY = Yhat - Yhat_
@@ -532,8 +532,7 @@ class MIM():
     MIM using PyTorch. Needed for experiments in the inpute influence paper.
     Args:
         X: numpy array of the non-protected attributes
-        Z: numpy array of the non-protected attributes of
-            the protected attribute (must be binary)
+        Z: numpy array of the protected attribute (must be binary?)
         Y: numpy array of the non-protected of the target value (must be binary)
     """
     def __init__(self, X, Z, Y):
@@ -560,3 +559,33 @@ class MIM():
         out = self.predict_proba(X)[:, 1]
         return np.array(out > 0.5, dtype=np.int32)
 
+class MIM_multi_prot():
+    """
+    MIM using PyTorch. Needed for experiments in the inpute influence paper.
+    Args:
+        X: numpy array of the non-protected attributes
+        Z: numpy array of the protected attributes (must be binary?)
+        Y: numpy array of the non-protected of the target value (must be binary)
+    """
+    def __init__(self, X, Z, Y):
+        XZ = np.hstack((X, Z))
+        self.model = LR().fit(XZ, Y)
+        self.Zs, self.Ws = np.unique(Z, return_counts=True, axis=0)
+        self.Ws = self.Ws / np.sum(self.Ws)
+
+    def mix_input(self, X):
+        mixXZ = np.empty((X.shape[0], self.Zs.shape[0]))
+        for idx, Zi in enumerate(self.Zs):
+            XZi = np.hstack((X, np.tile(Zi,(X.shape[0],1))))
+            mixXZ[:, idx] = self.model.predict_proba(XZi)[:, 0]
+        return mixXZ
+
+    def predict_proba(self, X):
+        mixXZ = self.mix_input(X)
+        out = np.matmul(mixXZ, self.Ws)
+        out = np.array([out, 1 - out])
+        return out.T
+
+    def predict(self, X):
+        out = self.predict_proba(X)[:, 1]
+        return np.array(out > 0.5, dtype=np.int32)
