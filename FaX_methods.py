@@ -534,10 +534,11 @@ class MIM():
         X: numpy array of the non-protected attributes
         Z: numpy array of the protected attribute (must be binary?)
         Y: numpy array of the non-protected of the target value (must be binary)
+        model: a sklearn compatible model, default LogisticRegression
     """
-    def __init__(self, X, Z, Y):
+    def __init__(self, X, Z, Y, model=LR()):
         XZ = np.hstack((X, Z))
-        self.model = LR().fit(XZ, Y)
+        self.model = model.fit(XZ, Y)
         self.Zs, self.Ws = np.unique(Z, return_counts=True)
         self.Ws = self.Ws / np.sum(self.Ws)
 
@@ -566,10 +567,11 @@ class MIM_multi_prot():
         X: numpy array of the non-protected attributes
         Z: numpy array of the protected attributes (must be binary?)
         Y: numpy array of the non-protected of the target value (must be binary)
+        model: a sklearn compatible model, default LogisticRegression
     """
-    def __init__(self, X, Z, Y):
+    def __init__(self, X, Z, Y, model=LR()):
         XZ = np.hstack((X, Z))
-        self.model = LR().fit(XZ, Y)
+        self.model = model.fit(XZ, Y)
         self.Zs, self.Ws = np.unique(Z, return_counts=True, axis=0)
         self.Ws = self.Ws / np.sum(self.Ws)
 
