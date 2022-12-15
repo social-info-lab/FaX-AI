@@ -532,39 +532,6 @@ class MIM():
     MIM using PyTorch. Needed for experiments in the inpute influence paper.
     Args:
         X: numpy array of the non-protected attributes
-        Z: numpy array of the protected attribute (must be binary?)
-        Y: numpy array of the non-protected of the target value (must be binary)
-        model: a sklearn compatible model, default LogisticRegression
-    """
-    def __init__(self, X, Z, Y, model=LR()):
-        XZ = np.hstack((X, Z))
-        self.model = model.fit(XZ, Y)
-        self.Zs, self.Ws = np.unique(Z, return_counts=True)
-        self.Ws = self.Ws / np.sum(self.Ws)
-
-    def mix_input(self, X):
-        mixXZ = np.empty((X.shape[0], self.Zs.shape[0]))
-        for idx, Zi in enumerate(self.Zs):
-            XZi = np.hstack((X, torch.ones(X.shape[0], 1) * Zi))
-            mixXZ[:, idx] = self.model.predict_proba(XZi)[:, 0]
-        return mixXZ
-
-    def predict_proba(self, X):
-        mixXZ = self.mix_input(X)
-        out = np.matmul(mixXZ, self.Ws)
-        out = np.array([out, 1 - out])
-        return out.T
-
-
-    def predict(self, X):
-        out = self.predict_proba(X)[:, 1]
-        return np.array(out > 0.5, dtype=np.int32)
-
-class MIM_multi_prot():
-    """
-    MIM using PyTorch. Needed for experiments in the inpute influence paper.
-    Args:
-        X: numpy array of the non-protected attributes
         Z: numpy array of the protected attributes (must be binary?)
         Y: numpy array of the non-protected of the target value (must be binary)
         model: a sklearn compatible model, default LogisticRegression
