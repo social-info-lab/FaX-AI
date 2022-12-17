@@ -23,14 +23,14 @@ class FaXAIF():
         params: a dictionary of the parameters to be used for OPT approach
     """
     def __init__(self, X_df, Y_df, prot_attr, model_type='MIM', influence='shap', params=None):
-        X = X_df[X_df.columns.drop(prot_attr)].values
-        Z = X_df[prot_attr].values.reshape(-1, 1)
-        Y = Y_df.values
+        self.X = X_df[X_df.columns.drop(prot_attr)].values
+        self.Z = X_df[prot_attr].values.reshape(-1, 1)
+        self.Y = Y_df.values
         self.prot_attr = prot_attr
         if model_type == 'MIM':
-            self.model = FaX_methods.MIM(X, Z, Y)
+            self.model = FaX_methods.MIM(self.X, self.Z, self.Y)
         elif model_type in ['optimization','OPT']:
-            self.model = FaX_methods.Optimization(X, Z, Y, influence=influence, params=params)
+            self.model = FaX_methods.Optimization(self.X, self.Z, self.Y, influence=influence, params=params)
 
     def predict_proba(self, X_df):
         X = X_df[X_df.columns.drop(self.prot_attr)].values

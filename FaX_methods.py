@@ -280,51 +280,6 @@ class SHAP():
         return out.mean(0)
 
 
-
-# class MDETorch_pool():
-#     def __init__(self, XZ, full, N=400, M=400):
-#         m, n = XZ.shape
-#         idx_XA = np.random.choice(m, N)
-#         idx_XB = np.random.choice(m, N)
-#         """
-#         (X1, X2, ..., XN, X1, X2, ...) -> M times
-#         dim : (NXM, n-1)
-#         """
-#         XA = XZ[idx_XA, :-1].repeat(M, 1)
-#         XB = XZ[idx_XB, :-1].repeat(M, 1)
-
-#         idx_Z = np.random.choice(m, N)
-#         """
-#         (Z1, Z1, ..(N times).., Z2, Z2, ..(N times).. .., ZM, ZM, ..(N times)..)
-#         dim : (NXM, 1)
-#         """
-#         Z = XZ[idx_Z, -1:].repeat_interleave(M, axis=0)
-#         self.XZ_A = torch.cat((XA.T, Z.T)).T
-#         self.XZ_B = torch.cat((XB.T, Z.T)).T
-#         self.N, self.M = N, M
-#         self.n, self.m = n, m
-
-#     def influence(self, method, X):
-#         # we can infer is_z from X
-#         if self.n == X.shape[1]:
-#             is_z = True
-#         else:
-#             is_z = False
-#         if is_z == False:
-#             inpA, inpB = self.XZ_A[:, :-1], self.XZ_B[:, :-1]
-#         else:
-#             inpA, inpB = self.XZ_A, self.XZ_B
-
-#         Yhat = method.predict_proba(inpA, True)[:, 0]
-#         Yhat_ = method.predict_proba(inpB, True)[:, 0]
-#         #dY = self.Y - self.Y_ - Yhat + Yhat_
-#         dY = torch.reshape(Yhat - Yhat_, (self.N, self.M)).mean(1)
-#         # L1 Norm
-#         # todo: don't take the mean
-#         # out = dY.mean(1)
-#         return dY
-
-
 class MDE_pool():
     """
     1. Draw N samples of X'' and X from the full set of values of X. This gives two vectors X'' and X
@@ -377,6 +332,13 @@ class MDE_pool():
 
 class MDE_ind():
     """
+    MDE influence measure of each feature individually
+    Args:
+        XZ: numpy array of the samples with all attributes
+        M: integer, see Step 2.
+        N: integer, see Step 1.
+
+    Steps:
     1. Draw N samples of Xi'' and Xi from the full set of values of Xi. This gives two vectors Xi'' and Xi
     2. For each of the N samples in each of the two vectors Xi'' and Xi, draw jointly M samples of Z' and all Xj' (all j!=i)
        from the full set of (X,Z) tuples. We end up with two big matrices: A = (Xi, all Xj',Z') and B = (Xi'', all Xj', Z').
@@ -386,27 +348,38 @@ class MDE_ind():
         self.m, self.n = XZ.shape
         self.M, self.N = M, N
         indices_AM = np.random.choice(self.m, self.M)
-        indices_BM = np.random.choice(self.m, self.M)
+        # indices_BM = np.random.choice(self.m, self.M)
         indices_AN = np.random.choice(self.m, self.N)
         indices_BN = np.random.choice(self.m, self.N)
 
-        XZ_A = np.tile(XZ[indices_AM, :], (self.n, self.N, 1, 1))
-        XZ_B = np.tile(XZ[indices_BM, :], (self.n, self.N, 1, 1))
+        XZ_A = np.tile(XZ[indices_AM, :], (self.n, self.N, 1, 1)) # (n X N X M X n)
+        XZ_B = XZ_A.copy() # np.tile(XZ[indices_BM, :], (self.n, self.N, 1, 1))
         sample_A = XZ[indices_AN, :]
         sample_B = XZ[indices_BN, :]
 
         for i in range(N):
-            XZ_A[np.arange(self.n), i, :, np.arange(self.n)] = np.tile(sample_A[i:i+1,:].T, (1, self.M))
+            XZ_A[np.arange(self.n), i, :, np.arange(self.n)] = np.tile(sample_A[i:i+1,:].T, (1, self.M)) # (n X M)
             XZ_B[np.arange(self.n), i, :, np.arange(self.n)] = np.tile(sample_B[i:i+1,:].T, (1, self.M))
 
         self.XZ_A = np.reshape(XZ_A, (-1, self.n))
         self.XZ_B = np.reshape(XZ_B, (-1, self.n))
+
+
     """
+    Steps continued
     3. Now, Yhat = eval_model.predict_proba(A), Yhat' = eval_model.predict_proba(B)
     4. Compute dY=Yhat-Yhat', then dY.reshape((n,N,M)) , followed up by mean over the M columns. This gives us a nXN size vector.
     5. We take abs of this and average over N.
     """
     def influence(self, method, X):
+        """
+        Measures the influence
+        Args:
+            method: the model being evaluated
+            X: numpy array of the samples, must match the shape of data used by the model being matched
+               so it can either be XZ (e.g., on models that use all features) or X (e.g., MIM)
+               if XZ, make sure Z is last attribute
+        """
         # we can infer is_z from X
         if self.n == X.shape[1]:
             is_z = True
